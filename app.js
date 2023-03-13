@@ -1,7 +1,6 @@
 const morgan = require('morgan');
 const express = require('express');
 const app = express();
-const port = 8000;
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -20,7 +19,4 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
-//server
-app.listen(port, () => {
-  console.log(`listening port ${port}...`);
-});
+module.exports = app;

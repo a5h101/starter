@@ -17,7 +17,10 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
-  res.status(200).render('base'); //express will render this req with name base
+  res.status(200).render('base', {
+    tour: 'The Forest Hiker',
+    user: 'Jonas',
+  }); //express will render this req with name base
 });
 
 //Mounting

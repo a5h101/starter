@@ -1,1 +1,21 @@
-h1 Prak Camper 
+doctype html 
+
+html 
+    head 
+        title Natours | #{tour}
+        link(rel='stylesheet' href='css/style.css')
+        link(rel='shortcut icon' type='image/png' href='img/favicon.png')    
+    body 
+        h1=tour 
+        p=user
+
+        //This comment is visible in html
+        //-This comment is not visible in html
+
+        -const a=5;
+        h2=a*2
+
+        p This is some text
+
+
+

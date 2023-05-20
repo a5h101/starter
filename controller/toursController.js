@@ -38,6 +38,8 @@ exports.getAllTours = async (req, res) => {
 
 //to get parameters
 exports.getTour = async (req, res) => {
+  console.log('hi6');
+
   try {
     const tour = await Tour.findById(req.params.id);
     res.status(200).json({
@@ -102,6 +104,99 @@ exports.createTour = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};
+
+exports.getTourStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } },
+      },
+      {
+        $group: {
+          _id: { $toUpper: '$difficulty' },
+          toursCount: { $sum: 1 },
+          ratingsCount: { $sum: '$ratingsQuantity' },
+          averageRating: { $avg: '$ratingsAverage' },
+          averagePrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+      {
+        $sort: { avgPrice: 1 }, //acending
+      },
+    ]);
+    // console.log(stats);
+    res.status(201).json({
+      status: 'sucess',
+      data: {
+        stats,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};
+
+exports.getMonthlyPlan = async (req, res) => {
+  try {
+    // console.log(req);
+    const year = Number(req.params.year);
+    console.log(year, typeof year);
+    const plan = await Tour.aggregate([
+      {
+        $unwind: '$startDates',
+      },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          tourStartsCount: { $sum: 1 },
+          tours: { $push: '$name' },
+        },
+      },
+      {
+        $addFields: {
+          month: '$_id',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $sort: { tourStartsCount: -1 },
+      },
+      {
+        $limit: 12,
+      },
+    ]);
+    res.status(201).json({
+      status: 'sucess',
+
+      data: {
+        results: plan.length,
+        plan,
+      },
+    });
+  } catch (err) {
     res.status(404).json({
       status: 'fail',
       message: err,

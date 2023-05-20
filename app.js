@@ -10,11 +10,11 @@ app.use(express.json());
 
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
-app.use((req, res, next) => {
-  console.log('hello from the middleware🤣');
-  req.requestTime = new Date().toISOString();
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log('hello from the middleware🤣');
+//   req.requestTime = new Date().toISOString();
+//   next();
+// });
 
 //Mounting
 app.use('/api/v1/tours', tourRouter);

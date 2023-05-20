@@ -1,21 +1,19 @@
-doctype html 
-
+//- doctype html 
 html 
-    head 
-        title Natours | #{tour}
+    head
+        meta(charset="UTF-8")
+        meta(name='viewport' content='width=device-width, initial-scale=1.0')
         link(rel='stylesheet' href='css/style.css')
-        link(rel='shortcut icon' type='image/png' href='img/favicon.png')    
+        link(rel='shortcut icon' type='image/png' href='img/favicon.png')   
+        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
+        title Natours | #{title}
     body 
-        h1=tour 
-        p=user
-
-        //This comment is visible in html
-        //-This comment is not visible in html
-
-        -const a=5;
-        h2=a*2
-
-        p This is some text
-
+        //Header
+        include _header
+        //Content
+        block content
+            h1 This is a place holder heading
+        //Footer
+        include _footer
 
 

@@ -10,20 +10,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
-
+const viewRouter = require('./routes/viewRoutes');
 //Middlewares
 app.use(express.json());
 
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
-app.get('/', (req, res) => {
-  res.status(200).render('base', {
-    tour: 'The Forest Hiker',
-    user: 'Jonas',
-  }); //express will render this req with name base
-});
-
 //Mounting
+app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 

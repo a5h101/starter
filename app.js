@@ -21,4 +21,12 @@ app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
+//exception
+app.all('*', (req, res, next) => {
+  res.send(404).json({
+    status: 'fail',
+    message: `Can't find ${req.originalUrl} on this server`,
+  });
+});
+
 module.exports = app;

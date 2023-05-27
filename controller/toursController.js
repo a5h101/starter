@@ -120,7 +120,7 @@ exports.getTourStats = async (req, res) => {
       },
       {
         $group: {
-          _id: { $toUpper: '$difficulty' },
+          _id: { $toUpper: '$difficulty' }, //toUpper just to conevrt id feild to captial(not value)
           toursCount: { $sum: 1 },
           ratingsCount: { $sum: '$ratingsQuantity' },
           averageRating: { $avg: '$ratingsAverage' },
@@ -155,38 +155,40 @@ exports.getMonthlyPlan = async (req, res) => {
     console.log(year, typeof year);
     const plan = await Tour.aggregate([
       {
-        $unwind: '$startDates',
+        $unwind: '$startDates', //deconstruct using startDates field
       },
       {
         $match: {
           startDates: {
+            //1 year time period
             $gte: new Date(`${year}-01-01`),
             $lte: new Date(`${year}-12-31`),
           },
         },
       },
+      //after match group will tell the structure of document
       {
         $group: {
-          _id: { $month: '$startDates' },
-          tourStartsCount: { $sum: 1 },
+          _id: { $month: '$startDates' }, //$month will pick only month's value from entire date
+          tourStartsCount: { $sum: 1 }, //count tours in each month
           tours: { $push: '$name' },
         },
       },
       {
         $addFields: {
-          month: '$_id',
+          month: '$_id', //create a copy of _id field with field name month
         },
       },
       {
         $project: {
-          _id: 0,
+          _id: 0, //in final output remove _id as month is representing it
         },
       },
       {
         $sort: { tourStartsCount: -1 },
       },
       {
-        $limit: 12,
+        $limit: 12, //limit the results
       },
     ]);
     res.status(201).json({
